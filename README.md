@@ -1,3 +1,6 @@
+mvn deploy:deploy-file "-DpomFile=C:\Users\BulavkinSM\.m2\repository\ru\kontur\diadoc\diadocsdk\1.36.2.2-dev\diadocsdk-1.36.2.2-dev.pom"   "-Dfile=C:\Users\BulavkinSM\projects\diadocsdk-java-sfera\target\diadocsdk-1.36.2.2-dev.jar"   "-DrepositoryId=bcs-main-releases"   "-Durl=http://artifactory.gitlab.bcs.ru/artifactory/bcs-main-releases"
+
+
 |              | Build Status
 |--------------|--------------
 | master       | [![Build status (master)](https://ci.appveyor.com/api/projects/status/2m2fh6avlbaq6ydf/branch/master?svg=true)](https://ci.appveyor.com/project/diadoc-admin/diadocsdk-java/branch/master)
