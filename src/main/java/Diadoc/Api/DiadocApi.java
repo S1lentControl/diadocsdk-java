@@ -31,6 +31,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.*;
 import javax.mail.internet.ContentDisposition;
@@ -82,7 +83,10 @@ public class DiadocApi {
 
     private static DefaultHttpClient createHttpClient()
             throws NoSuchAlgorithmException, KeyManagementException {
-        DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
+        PoolingClientConnectionManager cm = new PoolingClientConnectionManager();
+        cm.setMaxTotal(200);
+        cm.setDefaultMaxPerRoute(20);
+        DefaultHttpClient defaultHttpClient = new DefaultHttpClient(cm);
         HttpProtocolParams.setUserAgent(defaultHttpClient.getParams(), getUserAgentString());
         defaultHttpClient = makeTrustfulHttpClient(defaultHttpClient);
         defaultHttpClient.addRequestInterceptor(new DiadocPreemptiveAuthRequestInterceptor(), 0);
