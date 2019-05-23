@@ -4,6 +4,8 @@ import Diadoc.Api.Proto.*;
 import Diadoc.Api.Proto.Docflow.DocflowApiProtos;
 import Diadoc.Api.Proto.Documents.*;
 import Diadoc.Api.Proto.Documents.Types.DocumentTypeDescriptionProtos;
+import Diadoc.Api.Proto.Departments.*;
+import Diadoc.Api.Proto.Organizations.*;
 import Diadoc.Api.Proto.Employees.EmployeeProtos;
 import Diadoc.Api.Proto.Employees.Subscriptions.SubscriptionProtos;
 import Diadoc.Api.Proto.Employees.EmployeeToCreateProtos;
@@ -13,6 +15,7 @@ import Diadoc.Api.Proto.Events.DiadocMessage_PostApiProtos;
 import Diadoc.Api.Proto.Invoicing.*;
 import Diadoc.Api.Proto.Invoicing.Signers.*;
 import Diadoc.Api.Proto.Recognition.RecognitionProtos;
+import Diadoc.Api.Proto.Registration.RegistrationRequestProtos;
 import Diadoc.Api.Proto.Users.UserToUpdateProtos;
 import com.google.gson.Gson;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -54,8 +57,8 @@ public class DiadocApi {
     private static final int SHELF_PART_LENGTH = 512 * 1024;
     private static final int SHELF_MAX_ATTEMPTS = 3;
     private static final List<Integer> SHELF_NON_RETRIABLE_STATUS_CODES = new ArrayList<Integer>();
-    static
-    {
+
+    static {
         SHELF_NON_RETRIABLE_STATUS_CODES.add(HttpStatus.SC_UNAUTHORIZED);
         SHELF_NON_RETRIABLE_STATUS_CODES.add(HttpStatus.SC_FORBIDDEN);
         SHELF_NON_RETRIABLE_STATUS_CODES.add(HttpStatus.SC_PAYMENT_REQUIRED);
@@ -93,7 +96,7 @@ public class DiadocApi {
         return defaultHttpClient;
     }
 
-    public void setHttpParameter(String httpParameterKey, Object httpParameterValue){
+    public void setHttpParameter(String httpParameterKey, Object httpParameterValue) {
         if (httpParameterKey == null)
             throw new NullPointerException("httpParameterKey");
         if (httpParameterValue == null)
@@ -102,14 +105,12 @@ public class DiadocApi {
         this.httpClient.getParams().setParameter(httpParameterKey, httpParameterValue);
     }
 
-    private static String getUserAgentString()
-    {
+    private static String getUserAgentString() {
         return getDiadocSdkVersion() + ";" + getJavaRuntimeVersion();
     }
 
-    private static String getDiadocSdkVersion(){
-        try
-        {
+    private static String getDiadocSdkVersion() {
+        try {
             Package currentPackage = DiadocApi.class.getPackage();
             String version = currentPackage.getSpecificationVersion();
             if (version == null || version.length() == 0)
@@ -117,18 +118,16 @@ public class DiadocApi {
             if (version == null || version.length() == 0)
                 version = "Unknown";
             return "Diadoc SDK for Java v" + version;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return "Diadoc SDK for Java";
         }
     }
 
     private static String getJavaRuntimeVersion() {
         return "JRE=" + System.getProperty("java.version")
-            +  ";Vendor=" + System.getProperty("java.vendor")
-            +  ";OS=" + System.getProperty("os.name") + " v" + System.getProperty("os.version")
-            +  ";Arch=" + System.getProperty("os.arch");
+                + ";Vendor=" + System.getProperty("java.vendor")
+                + ";OS=" + System.getProperty("os.name") + " v" + System.getProperty("os.version")
+                + ";Arch=" + System.getProperty("os.arch");
     }
 
     private static DefaultHttpClient makeTrustfulHttpClient(HttpClient base)
@@ -163,7 +162,7 @@ public class DiadocApi {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("login", login));
         parameters.add(new BasicNameValuePair("password", password));
-        byte[] httpResponse = PerformPostHttpRequest("/Authenticate", parameters, null);
+        byte[] httpResponse = PerformPostHttpRequest("/V2/Authenticate", parameters, null);
         String result;
         try {
             result = new String(httpResponse, "UTF8");
@@ -237,27 +236,27 @@ public class DiadocApi {
         }
     }
 
-    public DiadocMessage_GetApiProtos.Template GetTemplate(String currentBoxId, String messageId) throws IOException {
+    public DiadocMessage_GetApiProtos.Template GetTemplate(String currentBoxId, String templateId) throws IOException {
         if (currentBoxId == null)
             throw new NullPointerException("currentBoxId");
-        if (messageId == null)
-            throw new NullPointerException("messageId");
+        if (templateId == null)
+            throw new NullPointerException("templateId");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("boxId", currentBoxId));
-        parameters.add(new BasicNameValuePair("messageId", messageId));
+        parameters.add(new BasicNameValuePair("templateId", templateId));
         return DiadocMessage_GetApiProtos.Template.parseFrom(PerformGetHttpRequest("/GetTemplate", parameters));
     }
 
-    public DiadocMessage_GetApiProtos.Template GetTemplate(String currentBoxId, String messageId, String entityId) throws IOException {
+    public DiadocMessage_GetApiProtos.Template GetTemplate(String currentBoxId, String templateId, String entityId) throws IOException {
         if (currentBoxId == null)
             throw new NullPointerException("currentBoxId");
-        if (messageId == null)
-            throw new NullPointerException("messageId");
+        if (templateId == null)
+            throw new NullPointerException("templateId");
         if (entityId == null)
             throw new NullPointerException("entityId");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("boxId", currentBoxId));
-        parameters.add(new BasicNameValuePair("messageId", messageId));
+        parameters.add(new BasicNameValuePair("templateId", templateId));
         parameters.add(new BasicNameValuePair("entityId", entityId));
         return DiadocMessage_GetApiProtos.Template.parseFrom(PerformGetHttpRequest("/GetTemplate", parameters));
     }
@@ -312,7 +311,7 @@ public class DiadocApi {
 
     private byte[] GetResponseBytes(HttpResponse response) throws IOException {
         if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
-            throw new HttpResponseException(response.getStatusLine().getStatusCode(), new String(IOUtils.toByteArray(response.getEntity().getContent()),"UTF8"));
+            throw new HttpResponseException(response.getStatusLine().getStatusCode(), new String(IOUtils.toByteArray(response.getEntity().getContent()), "UTF8"));
         return IOUtils.toByteArray(response.getEntity().getContent());
     }
 
@@ -364,7 +363,7 @@ public class DiadocApi {
         parameters.add(new BasicNameValuePair("inn", inn));
         if (!Tools.IsNullOrEmpty(kpp))
             parameters.add(new BasicNameValuePair("kpp", kpp));
-        if(includeRelations)
+        if (includeRelations)
             parameters.add(new BasicNameValuePair("includeRelations", "true"));
         return OrganizationProtos.OrganizationList.parseFrom(PerformGetHttpRequest("/GetOrganizationsByInnKpp", parameters));
     }
@@ -375,9 +374,9 @@ public class DiadocApi {
             throw new NullPointerException("request");
         byte[] responseBytes = PerformPostHttpRequest("/GetOrganizationsByInnList", null, request.toByteArray());
         GetOrganizationsByInnListProtos.GetOrganizationsByInnListResponse response =
-            GetOrganizationsByInnListProtos.GetOrganizationsByInnListResponse.parseFrom(responseBytes);
+                GetOrganizationsByInnListProtos.GetOrganizationsByInnListResponse.parseFrom(responseBytes);
         List<OrganizationProtos.Organization> result = new ArrayList<OrganizationProtos.Organization>();
-        for (GetOrganizationsByInnListProtos.OrganizationWithCounteragentStatus org: response.getOrganizationsList())
+        for (GetOrganizationsByInnListProtos.OrganizationWithCounteragentStatus org : response.getOrganizationsList())
             result.add(org.getOrganization());
         return result;
     }
@@ -390,7 +389,7 @@ public class DiadocApi {
     }
 
     public List<GetOrganizationsByInnListProtos.OrganizationWithCounteragentStatus> GetOrganizationsByInnList(String myOrgId,
-            GetOrganizationsByInnListProtos.GetOrganizationsByInnListRequest request) throws IOException {
+                                                                                                              GetOrganizationsByInnListProtos.GetOrganizationsByInnListRequest request) throws IOException {
         if (myOrgId == null)
             throw new NullPointerException("myOrgId");
         if (request == null)
@@ -401,13 +400,13 @@ public class DiadocApi {
 
         byte[] responseBytes = PerformPostHttpRequest("/GetOrganizationsByInnList", parameters, request.toByteArray());
         GetOrganizationsByInnListProtos.GetOrganizationsByInnListResponse response =
-            GetOrganizationsByInnListProtos.GetOrganizationsByInnListResponse.parseFrom(responseBytes);
+                GetOrganizationsByInnListProtos.GetOrganizationsByInnListResponse.parseFrom(responseBytes);
         return response.getOrganizationsList();
     }
 
     public List<GetOrganizationsByInnListProtos.OrganizationWithCounteragentStatus> GetOrganizationsByInnList(String myOrgId, Iterable<String> innList) throws IOException {
         GetOrganizationsByInnListProtos.GetOrganizationsByInnListRequest.Builder request =
-            GetOrganizationsByInnListProtos.GetOrganizationsByInnListRequest.newBuilder();
+                GetOrganizationsByInnListProtos.GetOrganizationsByInnListRequest.newBuilder();
         request.addAllInnList(innList);
         return GetOrganizationsByInnList(myOrgId, request.build());
     }
@@ -469,9 +468,11 @@ public class DiadocApi {
     public DiadocMessage_GetApiProtos.Message GetMessage(String currentBoxId, String messageId) throws IOException {
         return GetMessage(currentBoxId, messageId, false, false);
     }
+
     public DiadocMessage_GetApiProtos.Message GetMessage(String currentBoxId, String messageId, boolean withOriginalSignature) throws IOException {
         return GetMessage(currentBoxId, messageId, withOriginalSignature, false);
     }
+
     public DiadocMessage_GetApiProtos.Message GetMessage(String currentBoxId, String messageId, boolean withOriginalSignature, boolean injectEntityContent) throws IOException {
         if (currentBoxId == null)
             throw new NullPointerException("boxId");
@@ -486,12 +487,15 @@ public class DiadocApi {
 
         return DiadocMessage_GetApiProtos.Message.parseFrom(PerformGetHttpRequest("/V4/GetMessage", parameters));
     }
+
     public DiadocMessage_GetApiProtos.Message GetMessage(String currentBoxId, String messageId, String entityId) throws IOException {
         return GetMessage(currentBoxId, messageId, entityId, false, false);
     }
+
     public DiadocMessage_GetApiProtos.Message GetMessage(String currentBoxId, String messageId, String entityId, boolean withOriginalSignature) throws IOException {
         return GetMessage(currentBoxId, messageId, entityId, withOriginalSignature, false);
     }
+
     public DiadocMessage_GetApiProtos.Message GetMessage(String currentBoxId, String messageId, String entityId, boolean withOriginalSignature, boolean injectEntityContent) throws IOException {
         if (currentBoxId == null)
             throw new NullPointerException("boxId");
@@ -529,6 +533,7 @@ public class DiadocApi {
 
         return new GeneratedFile(GetHttpResponseFileName(webResponse), GetResponseBytes(webResponse));
     }
+
     public GeneratedFile GenerateDocumentReceiptXml(String boxId, String messageId, String attachmentId, SignerProtos.Signer signer)
             throws IllegalStateException, IOException, ParseException {
         if (boxId == null)
@@ -558,7 +563,7 @@ public class DiadocApi {
     }
 
     public GeneratedFile GenerateInvoiceCorrectionRequestXml(String boxId, String messageId, String attachmentId,
-            InvoiceCorrectionRequestInfoProtos.InvoiceCorrectionRequestInfo invoiceCorrectionInfo) throws IllegalStateException, IOException, ParseException {
+                                                             InvoiceCorrectionRequestInfoProtos.InvoiceCorrectionRequestInfo invoiceCorrectionInfo) throws IllegalStateException, IOException, ParseException {
         if (boxId == null)
             throw new NullPointerException("boxId");
         if (messageId == null)
@@ -576,7 +581,7 @@ public class DiadocApi {
     }
 
     public GeneratedFile GenerateRevocationRequestXml(String boxId, String messageId, String attachmentId,
-            RevocationRequestInfoProtos.RevocationRequestInfo revocationRequestInfo) throws IllegalStateException, IOException, ParseException {
+                                                      RevocationRequestInfoProtos.RevocationRequestInfo revocationRequestInfo) throws IllegalStateException, IOException, ParseException {
         if (boxId == null)
             throw new NullPointerException("boxId");
         if (messageId == null)
@@ -594,7 +599,7 @@ public class DiadocApi {
     }
 
     public GeneratedFile GenerateSignatureRejectionXml(String boxId, String messageId, String attachmentId,
-            SignatureRejectionInfoProtos.SignatureRejectionInfo signatureRejectionInfo) throws IllegalStateException, IOException, ParseException {
+                                                       SignatureRejectionInfoProtos.SignatureRejectionInfo signatureRejectionInfo) throws IllegalStateException, IOException, ParseException {
         if (boxId == null)
             throw new NullPointerException("boxId");
         if (messageId == null)
@@ -656,7 +661,7 @@ public class DiadocApi {
 
     public GeneratedFile GenerateTorg12XmlForSeller(Torg12InfoProtos.Torg12SellerTitleInfo sellerTitleInfo, boolean disableValidation) throws IOException, ParseException {
         if (sellerTitleInfo == null) throw new NullPointerException("sellerTitleInfo");
-        HttpResponse httpResponse = ReceivePostHttpResponse("/GenerateTorg12XmlForSeller" + (disableValidation?"?disableValidation":""), null, sellerTitleInfo.toByteArray());
+        HttpResponse httpResponse = ReceivePostHttpResponse("/GenerateTorg12XmlForSeller" + (disableValidation ? "?disableValidation" : ""), null, sellerTitleInfo.toByteArray());
         return new GeneratedFile(GetHttpResponseFileName(httpResponse), GetResponseBytes(httpResponse));
     }
 
@@ -679,7 +684,7 @@ public class DiadocApi {
 
     public GeneratedFile GenerateTovTorg551XmlForSeller(TovTorgInfoProtos.TovTorgSellerTitleInfo sellerTitleInfo, boolean disableValidation) throws IOException, ParseException {
         if (sellerTitleInfo == null) throw new NullPointerException("sellerTitleInfo");
-        HttpResponse httpResponse = ReceivePostHttpResponse("/GenerateTorg12XmlForSeller?documentVersion=tovtorg_05_01_03" + (disableValidation?"&disableValidation":""), null, sellerTitleInfo.toByteArray());
+        HttpResponse httpResponse = ReceivePostHttpResponse("/GenerateTorg12XmlForSeller?documentVersion=tovtorg_05_01_04" + (disableValidation ? "&disableValidation" : ""), null, sellerTitleInfo.toByteArray());
         return new GeneratedFile(GetHttpResponseFileName(httpResponse), GetResponseBytes(httpResponse));
     }
 
@@ -688,7 +693,7 @@ public class DiadocApi {
             String boxId,
             String sellerTitleMessageId,
             String sellerTitleAttachmentId) throws IOException, ParseException {
-        return GenerateTovTorg551XmlForBuyer(buyerTitleInfo, boxId, sellerTitleMessageId, sellerTitleAttachmentId, "tovtorg_05_01_02");
+        return GenerateTovTorg551XmlForBuyer(buyerTitleInfo, boxId, sellerTitleMessageId, sellerTitleAttachmentId, "tovtorg_05_01_04");
     }
 
     public GeneratedFile GenerateTovTorg551XmlForBuyer(
@@ -717,7 +722,7 @@ public class DiadocApi {
 
     public GeneratedFile GenerateAcceptanceCertificateXmlForSeller(AcceptanceCertificateInfoProtos.AcceptanceCertificateSellerTitleInfo sellerTitleInfo, boolean disableValidation) throws IOException, ParseException {
         if (sellerTitleInfo == null) throw new NullPointerException("sellerTitleInfo");
-        HttpResponse httpResponse = ReceivePostHttpResponse("/GenerateAcceptanceCertificateXmlForSeller" + (disableValidation?"?disableValidation":""), null, sellerTitleInfo.toByteArray());
+        HttpResponse httpResponse = ReceivePostHttpResponse("/GenerateAcceptanceCertificateXmlForSeller" + (disableValidation ? "?disableValidation" : ""), null, sellerTitleInfo.toByteArray());
         return new GeneratedFile(GetHttpResponseFileName(httpResponse), GetResponseBytes(httpResponse));
     }
 
@@ -741,12 +746,12 @@ public class DiadocApi {
 
     public GeneratedFile GenerateAcceptanceCertificate552XmlForSeller(AcceptanceCertificate552InfoProtos.AcceptanceCertificate552SellerTitleInfo sellerTitleInfo, boolean disableValidation) throws IOException, ParseException {
         if (sellerTitleInfo == null) throw new NullPointerException("sellerTitleInfo");
-        HttpResponse httpResponse = ReceivePostHttpResponse("/GenerateAcceptanceCertificateXmlForSeller?documentVersion=rezru_05_01_01" + (disableValidation?"&disableValidation":""), null, sellerTitleInfo.toByteArray());
+        HttpResponse httpResponse = ReceivePostHttpResponse("/GenerateAcceptanceCertificateXmlForSeller?documentVersion=rezru_05_01_02" + (disableValidation ? "&disableValidation" : ""), null, sellerTitleInfo.toByteArray());
         return new GeneratedFile(GetHttpResponseFileName(httpResponse), GetResponseBytes(httpResponse));
     }
 
     public GeneratedFile GenerateAcceptanceCertificate552XmlForBuyer(AcceptanceCertificate552InfoProtos.AcceptanceCertificate552BuyerTitleInfo buyerTitleInfo, String boxId, String sellerTitleMessageId,
-                                                                  String sellerTitleAttachmentId) throws IOException, ParseException {
+                                                                     String sellerTitleAttachmentId) throws IOException, ParseException {
         if (buyerTitleInfo == null) throw new NullPointerException("buyerTitleInfo");
         if (boxId == null) throw new NullPointerException("boxId");
         if (sellerTitleMessageId == null) throw new NullPointerException("sellerTitleMessageId");
@@ -755,7 +760,7 @@ public class DiadocApi {
         parameters.add(new BasicNameValuePair("boxId", boxId));
         parameters.add(new BasicNameValuePair("sellerTitleMessageId", sellerTitleMessageId));
         parameters.add(new BasicNameValuePair("sellerTitleAttachmentId", sellerTitleAttachmentId));
-        parameters.add(new BasicNameValuePair("documentVersion", "rezru_05_01_01"));
+        parameters.add(new BasicNameValuePair("documentVersion", "rezru_05_01_02"));
         HttpResponse httpResponse = ReceivePostHttpResponse("/GenerateAcceptanceCertificateXmlForBuyer", parameters, buyerTitleInfo.toByteArray());
         return new GeneratedFile(GetHttpResponseFileName(httpResponse), GetResponseBytes(httpResponse));
     }
@@ -767,9 +772,9 @@ public class DiadocApi {
     public GeneratedFile GenerateUniversalTransferDocumentXmlForSeller(UniversalTransferDocumentInfoProtos.UniversalTransferDocumentSellerTitleInfo utdInfo, boolean disableValidation) throws IOException, ParseException {
         if (utdInfo == null) throw new NullPointerException("info");
         HttpResponse httpResponse = ReceivePostHttpResponse(
-            "/GenerateUniversalTransferDocumentXmlForSeller" + (disableValidation ? "?disableValidation" : ""),
-            null,
-            utdInfo.toByteArray());
+                "/GenerateUniversalTransferDocumentXmlForSeller" + (disableValidation ? "?disableValidation" : ""),
+                null,
+                utdInfo.toByteArray());
         return new GeneratedFile(GetHttpResponseFileName(httpResponse), GetResponseBytes(httpResponse));
     }
 
@@ -780,19 +785,19 @@ public class DiadocApi {
     public GeneratedFile GenerateUniversalCorrectionTransferDocumentXmlForSeller(UniversalTransferDocumentInfoProtos.UniversalCorrectionDocumentSellerTitleInfo ucdInfo, boolean disableValidation) throws IOException, ParseException {
         if (ucdInfo == null) throw new NullPointerException("info");
         HttpResponse httpResponse = ReceivePostHttpResponse(
-            "/GenerateUniversalTransferDocumentXmlForSeller"
-                + "?correction"
-                + (disableValidation ? "&disableValidation" : ""),
-            null,
-            ucdInfo.toByteArray());
+                "/GenerateUniversalTransferDocumentXmlForSeller"
+                        + "?correction"
+                        + (disableValidation ? "&disableValidation" : ""),
+                null,
+                ucdInfo.toByteArray());
         return new GeneratedFile(GetHttpResponseFileName(httpResponse), GetResponseBytes(httpResponse));
     }
 
     public GeneratedFile GenerateUniversalTransferDocumentXmlForBuyer(
-        UniversalTransferDocumentInfoProtos.UniversalTransferDocumentBuyerTitleInfo buyerTitleInfo,
-        String boxId,
-        String sellerTitleMessageId,
-        String sellerTitleAttachmentId
+            UniversalTransferDocumentInfoProtos.UniversalTransferDocumentBuyerTitleInfo buyerTitleInfo,
+            String boxId,
+            String sellerTitleMessageId,
+            String sellerTitleAttachmentId
     ) throws IOException, ParseException {
         if (buyerTitleInfo == null) throw new NullPointerException("buyerTitleInfo");
         if (boxId == null) throw new NullPointerException("boxId");
@@ -868,120 +873,114 @@ public class DiadocApi {
     }
 
     @Deprecated
-    public ExtendedSignerProtos.ExtendedSignerDetails GetExtendedSignerDetails(String boxId, String thumbprint, boolean forBuyer, boolean forCorrection) throws IOException
-    {
+    public ExtendedSignerProtos.ExtendedSignerDetails GetExtendedSignerDetails(String boxId, String thumbprint, boolean forBuyer, boolean forCorrection) throws IOException {
         ExtendedSignerProtos.DocumentTitleType documentTitleType = CreateUtdDocumentTitleType(forBuyer, forCorrection);
         return GetExtendedSignerDetails(boxId, thumbprint, documentTitleType);
     }
 
-    public ExtendedSignerProtos.ExtendedSignerDetails GetExtendedSignerDetails(String boxId, String thumbprint, ExtendedSignerProtos.DocumentTitleType documentTitleType) throws IOException
-    {
+    public ExtendedSignerProtos.ExtendedSignerDetails GetExtendedSignerDetails(String boxId, String thumbprint, ExtendedSignerProtos.DocumentTitleType documentTitleType) throws IOException {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("boxId", boxId));
         parameters.add(new BasicNameValuePair("thumbprint", thumbprint));
         parameters.add(new BasicNameValuePair("documentTitleType", Integer.toString(documentTitleType.getNumber())));
 
         return ExtendedSignerProtos.ExtendedSignerDetails.parseFrom(
-            PerformGetHttpRequest("/V2/ExtendedSignerDetails", parameters)
+                PerformGetHttpRequest("/V2/ExtendedSignerDetails", parameters)
         );
     }
 
     @Deprecated
-    public ExtendedSignerProtos.ExtendedSignerDetails PostExtendedSignerDetails(String boxId, String thumbprint, boolean forBuyer, boolean forCorrection, ExtendedSignerProtos.ExtendedSignerDetailsToPost signerDetails) throws IOException
-    {
+    public ExtendedSignerProtos.ExtendedSignerDetails PostExtendedSignerDetails(String boxId, String thumbprint, boolean forBuyer, boolean forCorrection, ExtendedSignerProtos.ExtendedSignerDetailsToPost signerDetails) throws IOException {
         ExtendedSignerProtos.DocumentTitleType documentTitleType = CreateUtdDocumentTitleType(forBuyer, forCorrection);
         return PostExtendedSignerDetails(boxId, thumbprint, documentTitleType, signerDetails);
     }
 
-    public ExtendedSignerProtos.ExtendedSignerDetails PostExtendedSignerDetails(String boxId, String thumbprint, ExtendedSignerProtos.DocumentTitleType documentTitleType, ExtendedSignerProtos.ExtendedSignerDetailsToPost signerDetails) throws IOException
-    {
+    public ExtendedSignerProtos.ExtendedSignerDetails PostExtendedSignerDetails(String boxId, String thumbprint, ExtendedSignerProtos.DocumentTitleType documentTitleType, ExtendedSignerProtos.ExtendedSignerDetailsToPost signerDetails) throws IOException {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("boxId", boxId));
         parameters.add(new BasicNameValuePair("thumbprint", thumbprint));
         parameters.add(new BasicNameValuePair("documentTitleType", Integer.toString(documentTitleType.getNumber())));
 
         return ExtendedSignerProtos.ExtendedSignerDetails.parseFrom(
-            PerformPostHttpRequest("/V2/ExtendedSignerDetails", parameters, signerDetails.toByteArray())
+                PerformPostHttpRequest("/V2/ExtendedSignerDetails", parameters, signerDetails.toByteArray())
         );
     }
 
     private static ExtendedSignerProtos.DocumentTitleType CreateUtdDocumentTitleType(boolean forBuyer, boolean forCorrection) {
         return forBuyer
-            ? (forCorrection ? ExtendedSignerProtos.DocumentTitleType.UcdBuyer : ExtendedSignerProtos.DocumentTitleType.UtdBuyer)
-            : (forCorrection ? ExtendedSignerProtos.DocumentTitleType.UcdSeller : ExtendedSignerProtos.DocumentTitleType.UtdSeller);
+                ? (forCorrection ? ExtendedSignerProtos.DocumentTitleType.UcdBuyer : ExtendedSignerProtos.DocumentTitleType.UtdBuyer)
+                : (forCorrection ? ExtendedSignerProtos.DocumentTitleType.UcdSeller : ExtendedSignerProtos.DocumentTitleType.UtdSeller);
     }
 
-    public InvoiceInfoProtos.InvoiceInfo ParseInvoiceXml(byte[] invoiceXmlContent) throws IOException
-    {
+    public InvoiceInfoProtos.InvoiceInfo ParseInvoiceXml(byte[] invoiceXmlContent) throws IOException {
         return InvoiceInfoProtos.InvoiceInfo.parseFrom(PerformPostHttpRequest("/ParseInvoiceXml", null, invoiceXmlContent));
     }
 
-    public Torg12InfoProtos.Torg12SellerTitleInfo ParseTorg12SellerTitleXml(byte[] sellerTitleXmlContent) throws IOException
-    {
+    public Torg12InfoProtos.Torg12SellerTitleInfo ParseTorg12SellerTitleXml(byte[] sellerTitleXmlContent) throws IOException {
         return Torg12InfoProtos.Torg12SellerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseTorg12SellerTitleXml", null, sellerTitleXmlContent));
     }
 
-    public Torg12InfoProtos.Torg12BuyerTitleInfo ParseTorg12BuyerTitleXml(byte[] buyerTitleXmlContent) throws IOException
-    {
+    public Torg12InfoProtos.Torg12BuyerTitleInfo ParseTorg12BuyerTitleXml(byte[] buyerTitleXmlContent) throws IOException {
         return Torg12InfoProtos.Torg12BuyerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseTorg12BuyerTitleXml", null, buyerTitleXmlContent));
     }
 
-    public TovTorgInfoProtos.TovTorgSellerTitleInfo ParseTovTorg551SellerTitleXml(byte[] sellerTitleXmlContent) throws IOException
-    {
-        return TovTorgInfoProtos.TovTorgSellerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseTorg12SellerTitleXml?documentVersion=tovtorg_05_01_03", null, sellerTitleXmlContent));
+    public TovTorgInfoProtos.TovTorgSellerTitleInfo ParseTovTorg551SellerTitleXml(byte[] sellerTitleXmlContent) throws IOException {
+        return TovTorgInfoProtos.TovTorgSellerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseTorg12SellerTitleXml?documentVersion=tovtorg_05_01_04", null, sellerTitleXmlContent));
     }
 
-    public TovTorgInfoProtos.TovTorgBuyerTitleInfo ParseTovTorg551BuyerTitleXml(byte[] buyerTitleXmlContent) throws IOException
-    {
-        return TovTorgInfoProtos.TovTorgBuyerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseTorg12BuyerTitleXml?documentVersion=tovtorg_05_01_02", null, buyerTitleXmlContent));
+    public TovTorgInfoProtos.TovTorgBuyerTitleInfo ParseTovTorg551BuyerTitleXml(byte[] buyerTitleXmlContent) throws IOException {
+        return TovTorgInfoProtos.TovTorgBuyerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseTorg12BuyerTitleXml?documentVersion=tovtorg_05_01_04", null, buyerTitleXmlContent));
     }
 
-    public AcceptanceCertificateInfoProtos.AcceptanceCertificateSellerTitleInfo ParseAcceptanceCertificateSellerTitleXml(byte[] sellerTitleXmlContent) throws IOException
-    {
+    public AcceptanceCertificateInfoProtos.AcceptanceCertificateSellerTitleInfo ParseAcceptanceCertificateSellerTitleXml(byte[] sellerTitleXmlContent) throws IOException {
         return AcceptanceCertificateInfoProtos.AcceptanceCertificateSellerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseAcceptanceCertificateSellerTitleXml", null, sellerTitleXmlContent));
     }
 
-    public AcceptanceCertificateInfoProtos.AcceptanceCertificateBuyerTitleInfo ParseAcceptanceCertificateBuyerTitleXml(byte[] buyerTitleXmlContent) throws IOException
-    {
+    public AcceptanceCertificateInfoProtos.AcceptanceCertificateBuyerTitleInfo ParseAcceptanceCertificateBuyerTitleXml(byte[] buyerTitleXmlContent) throws IOException {
         return AcceptanceCertificateInfoProtos.AcceptanceCertificateBuyerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseAcceptanceCertificateBuyerTitleXml", null, buyerTitleXmlContent));
     }
 
-    public AcceptanceCertificate552InfoProtos.AcceptanceCertificate552SellerTitleInfo ParseAcceptanceCertificate552SellerTitleXml(byte[] sellerTitleXmlContent) throws IOException
-    {
-        return AcceptanceCertificate552InfoProtos.AcceptanceCertificate552SellerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseAcceptanceCertificateSellerTitleXml?documentVersion=rezru_05_01_01", null, sellerTitleXmlContent));
+    public AcceptanceCertificate552InfoProtos.AcceptanceCertificate552SellerTitleInfo ParseAcceptanceCertificate552SellerTitleXml(byte[] sellerTitleXmlContent) throws IOException {
+        return AcceptanceCertificate552InfoProtos.AcceptanceCertificate552SellerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseAcceptanceCertificateSellerTitleXml?documentVersion=rezru_05_01_02", null, sellerTitleXmlContent));
     }
 
-    public AcceptanceCertificate552InfoProtos.AcceptanceCertificate552BuyerTitleInfo ParseAcceptanceCertificate552BuyerTitleXml(byte[] buyerTitleXmlContent) throws IOException
-    {
-        return AcceptanceCertificate552InfoProtos.AcceptanceCertificate552BuyerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseAcceptanceCertificateBuyerTitleXml?documentVersion=rezru_05_01_01", null, buyerTitleXmlContent));
+    public AcceptanceCertificate552InfoProtos.AcceptanceCertificate552BuyerTitleInfo ParseAcceptanceCertificate552BuyerTitleXml(byte[] buyerTitleXmlContent) throws IOException {
+        return AcceptanceCertificate552InfoProtos.AcceptanceCertificate552BuyerTitleInfo.parseFrom(PerformPostHttpRequest("/ParseAcceptanceCertificateBuyerTitleXml?documentVersion=rezru_05_01_02", null, buyerTitleXmlContent));
     }
 
-    public UniversalTransferDocumentInfoProtos.UniversalTransferDocumentSellerTitleInfo ParseUniversalTransferDocumentSellerTitleXml(byte[] utdXmlContent) throws IOException
-    {
+    public UniversalTransferDocumentInfoProtos.UniversalTransferDocumentSellerTitleInfo ParseUniversalTransferDocumentSellerTitleXml(byte[] utdXmlContent) throws IOException {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("documentVersion", "utd_05_01_04"));
+        parameters.add(new BasicNameValuePair("documentVersion", "utd_05_01_05"));
         byte[] response = PerformPostHttpRequest("/ParseUniversalTransferDocumentSellerTitleXml", parameters, utdXmlContent);
         return UniversalTransferDocumentInfoProtos.UniversalTransferDocumentSellerTitleInfo.parseFrom(response);
     }
 
-    public UniversalTransferDocumentInfoProtos.UniversalTransferDocumentBuyerTitleInfo ParseUniversalTransferDocumentBuyerTitleXml(byte[] utdXmlContent) throws IOException
-    {
+    public UniversalTransferDocumentInfoProtos.UniversalTransferDocumentBuyerTitleInfo ParseUniversalTransferDocumentBuyerTitleXml(byte[] utdXmlContent) throws IOException {
         byte[] response = PerformPostHttpRequest("/ParseUniversalTransferDocumentBuyerTitleXml", null, utdXmlContent);
         return UniversalTransferDocumentInfoProtos.UniversalTransferDocumentBuyerTitleInfo.parseFrom(response);
     }
 
-    public UniversalTransferDocumentInfoProtos.UniversalCorrectionDocumentSellerTitleInfo ParseUniversalCorrectionDocumentSellerTitleXml(byte[] utdXmlContent) throws IOException
-    {
+    public UniversalTransferDocumentInfoProtos.UniversalCorrectionDocumentSellerTitleInfo ParseUniversalCorrectionDocumentSellerTitleXml(byte[] utdXmlContent) throws IOException {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("documentVersion", "ucd_05_01_02"));
+        parameters.add(new BasicNameValuePair("documentVersion", "ucd_05_01_03"));
         byte[] response = PerformPostHttpRequest("/ParseUniversalCorrectionDocumentSellerTitleXml", parameters, utdXmlContent);
         return UniversalTransferDocumentInfoProtos.UniversalCorrectionDocumentSellerTitleInfo.parseFrom(response);
     }
 
-    public UniversalTransferDocumentInfoProtos.UniversalTransferDocumentBuyerTitleInfo ParseUniversalCorrectionDocumentBuyerTitleXml(byte[] utdXmlContent) throws IOException
-    {
+    public UniversalTransferDocumentInfoProtos.UniversalTransferDocumentBuyerTitleInfo ParseUniversalCorrectionDocumentBuyerTitleXml(byte[] utdXmlContent) throws IOException {
         byte[] response = PerformPostHttpRequest("/ParseUniversalCorrectionDocumentBuyerTitleXml", null, utdXmlContent);
         return UniversalTransferDocumentInfoProtos.UniversalTransferDocumentBuyerTitleInfo.parseFrom(response);
+    }
+
+    public byte[] ParseTitleXml(String boxId, String documentTypeNamedId, String documentFunction, String documentVersion, Integer titleIndex, byte[] content) throws IOException
+    {
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+        parameters.add(new BasicNameValuePair("boxId", boxId));
+        parameters.add(new BasicNameValuePair("documentTypeNamedId", documentTypeNamedId));
+        parameters.add(new BasicNameValuePair("documentFunction", documentFunction));
+        parameters.add(new BasicNameValuePair("documentVersion", documentVersion));
+        parameters.add(new BasicNameValuePair("titleIndex", titleIndex.toString()));
+        return PerformPostHttpRequest("/ParseTitleXml", parameters, content);
     }
 
     public RevocationRequestInfoProtos.RevocationRequestInfo ParseRevocationRequestXml(byte[] xmlContent) throws IOException
@@ -989,8 +988,7 @@ public class DiadocApi {
         return RevocationRequestInfoProtos.RevocationRequestInfo.parseFrom(PerformPostHttpRequest("/ParseRevocationRequestXml", null, xmlContent));
     }
 
-    public SignatureRejectionInfoProtos.SignatureRejectionInfo ParseSignatureRejectionXml(byte[] xmlContent) throws IOException
-    {
+    public SignatureRejectionInfoProtos.SignatureRejectionInfo ParseSignatureRejectionXml(byte[] xmlContent) throws IOException {
         return SignatureRejectionInfoProtos.SignatureRejectionInfo.parseFrom(PerformPostHttpRequest("/ParseSignatureRejectionXml", null, xmlContent));
     }
 
@@ -1115,7 +1113,6 @@ public class DiadocApi {
     }
 
 
-
     public String Recognize(String fileName, byte[] content) throws IOException {
         if (Tools.IsNullOrEmpty(fileName)) throw new NullPointerException("fileName");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
@@ -1136,7 +1133,8 @@ public class DiadocApi {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("boxId", filter.boxId));
         parameters.add(new BasicNameValuePair("filterCategory", filter.filterCategory));
-        if (!Tools.IsNullOrEmpty(filter.counteragentBoxId)) parameters.add(new BasicNameValuePair("counteragentBoxId", filter.counteragentBoxId));
+        if (!Tools.IsNullOrEmpty(filter.counteragentBoxId))
+            parameters.add(new BasicNameValuePair("counteragentBoxId", filter.counteragentBoxId));
         if (filter.timestampFrom != null) {
             long fromTicks = Tools.toCsTicks(filter.timestampFrom.getTime());
             parameters.add(new BasicNameValuePair("timestampFromTicks", Long.toString(fromTicks)));
@@ -1275,7 +1273,7 @@ public class DiadocApi {
         PerformPostHttpRequest("/RecycleDraft", parameters, null);
     }
 
-    public boolean CanSendInvoice(String boxId, byte [] certBytes) throws IOException {
+    public boolean CanSendInvoice(String boxId, byte[] certBytes) throws IOException {
         if (Tools.IsNullOrEmpty(boxId)) throw new NullPointerException("boxId");
         if (certBytes == null || certBytes.length == 0) throw new NullPointerException("certBytes");
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
@@ -1283,18 +1281,17 @@ public class DiadocApi {
         HttpResponse httpResponse = ReceivePostHttpResponse("/CanSendInvoice", parameters, certBytes);
         int statusCode = httpResponse.getStatusLine().getStatusCode();
         byte[] responseContent = IOUtils.toByteArray(httpResponse.getEntity().getContent());
-        switch (statusCode)
-        {
+        switch (statusCode) {
             case HttpStatus.SC_OK:
                 return true;
             case HttpStatus.SC_FORBIDDEN:
                 return false;
             default:
-                throw new HttpResponseException(statusCode, new String(responseContent,"UTF8"));
+                throw new HttpResponseException(statusCode, new String(responseContent, "UTF8"));
         }
     }
 
-    public void MoveDocuments(DocumentsMoveOperationProtos.DocumentsMoveOperation operation) throws IOException{
+    public void MoveDocuments(DocumentsMoveOperationProtos.DocumentsMoveOperation operation) throws IOException {
         PerformPostHttpRequest("/MoveDocuments", new ArrayList<NameValuePair>(), operation.toByteArray());
     }
 
@@ -1319,8 +1316,7 @@ public class DiadocApi {
 
         List<IOException> httpErrors = new ArrayList<IOException>();
         int attempts = 0;
-        while (missingParts.size() > 0)
-        {
+        while (missingParts.size() > 0) {
             if (++attempts > SHELF_MAX_ATTEMPTS)
                 throw new AggregateException("Reached the limit of attempts to send a file", httpErrors.toArray(new Throwable[0]));
 
@@ -1339,21 +1335,17 @@ public class DiadocApi {
         Set<Integer> lastMissingParts = new HashSet<Integer>(missingParts);
         int maxProcessedPartIndex = -1;
 
-        for (int partIndex: missingParts)
-        {
+        for (int partIndex : missingParts) {
             boolean isLastPart = partIndex == partsCount - 1;
             List<Integer> newMissingParts = PutPart(nameOnShelf, allParts.get(partIndex), partIndex, isLastPart, httpErrors);
-            if (newMissingParts != null)
-            {
-                if (partIndex > maxProcessedPartIndex)
-                {
+            if (newMissingParts != null) {
+                if (partIndex > maxProcessedPartIndex) {
                     lastMissingParts.clear();
                     lastMissingParts.addAll(newMissingParts);
 
                     maxProcessedPartIndex = partIndex;
                 }
-            }
-            else
+            } else
                 lastMissingParts.add(partIndex);
         }
         if (lastMissingParts == null)
@@ -1369,22 +1361,19 @@ public class DiadocApi {
             parameters.add(new BasicNameValuePair("isLastPart", "1"));
 
         HttpResponse httpResponse;
-        try
-        {
+        try {
             httpResponse = ReceivePostHttpResponse("/ShelfUpload", parameters, part.getBytes());
             if (httpResponse == null)
                 throw new IOException("http response:null");
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             httpErrors.add(e);
             return null;
         }
 
         int statusCode = httpResponse.getStatusLine().getStatusCode();
 
-        if (statusCode != HttpStatus.SC_OK){
-            if (SHELF_NON_RETRIABLE_STATUS_CODES.contains(statusCode)){
+        if (statusCode != HttpStatus.SC_OK) {
+            if (SHELF_NON_RETRIABLE_STATUS_CODES.contains(statusCode)) {
                 throw new IOException(FormatResponseMessage(httpResponse, statusCode));
             }
 
@@ -1414,8 +1403,7 @@ public class DiadocApi {
     private ArrayList<ByteArraySegment> SplitDataIntoParts(byte[] data) {
         ArrayList<ByteArraySegment> result = new ArrayList<ByteArraySegment>();
         int currentPartOffset = 0;
-        while (currentPartOffset < data.length)
-        {
+        while (currentPartOffset < data.length) {
             int length = Math.min(data.length - currentPartOffset, SHELF_PART_LENGTH);
             result.add(new ByteArraySegment(data, currentPartOffset, length));
             currentPartOffset += length;
@@ -1429,6 +1417,14 @@ public class DiadocApi {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair(idName, id));
         return OrganizationProtos.Organization.parseFrom(PerformGetHttpRequest("/GetOrganization", parameters));
+    }
+
+    private OrganizationFeaturesProtos.OrganizationFeatures GetOrganizationFeatures(String boxId) throws IOException {
+        if (boxId == null)
+            throw new NullPointerException("boxId");
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+        parameters.add(new BasicNameValuePair("boxId", boxId));
+        return OrganizationFeaturesProtos.OrganizationFeatures.parseFrom(PerformGetHttpRequest("/GetOrganizationFeatures", parameters));
     }
 
     public UserProtos.User GetMyUser() throws IOException {
@@ -1448,6 +1444,77 @@ public class DiadocApi {
         return UserProtos.UserV2.parseFrom(responseBytes);
     }
 
+    public DepartmentProtos.Department GetDepartmentByFullId(String boxId, String departmentId) throws IOException {
+        if (boxId == null) throw new NullPointerException("boxId");
+        if (departmentId == null) throw new NullPointerException("departmentId");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("boxId", boxId));
+        params.add(new BasicNameValuePair("departmentId", departmentId));
+        byte[] responseBytes = PerformGetHttpRequest("/admin/GetDepartment", params);
+        return DepartmentProtos.Department.parseFrom(responseBytes);
+    }
+
+    public DepartmentListProtos.DepartmentList GetDepartments(String boxId) throws IOException {
+        if (boxId == null) throw new NullPointerException("boxId");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("boxId", boxId));
+        byte[] responseBytes = PerformGetHttpRequest("/admin/GetDepartments", params);
+        return DepartmentListProtos.DepartmentList.parseFrom(responseBytes);
+    }
+
+    public DepartmentListProtos.DepartmentList GetDepartments(String boxId, int page) throws IOException {
+        if (boxId == null) throw new NullPointerException("boxId");
+        if (page < 1) throw new IllegalArgumentException("page must be 1 or greater");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("boxId", boxId));
+        params.add(new BasicNameValuePair("page", Integer.toString(page)));
+        byte[] responseBytes = PerformGetHttpRequest("/admin/GetDepartments", params);
+        return DepartmentListProtos.DepartmentList.parseFrom(responseBytes);
+    }
+
+    public DepartmentListProtos.DepartmentList GetDepartments(String boxId, int page, int count) throws IOException {
+        if (boxId == null) throw new NullPointerException("boxId");
+        if (page < 1) throw new IllegalArgumentException("page must be 1 or greater");
+        if (count < 1) throw new IllegalArgumentException("count must be 1 or greater");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("boxId", boxId));
+        params.add(new BasicNameValuePair("page", Integer.toString(page)));
+        params.add(new BasicNameValuePair("count", Integer.toString(count)));
+        byte[] responseBytes = PerformGetHttpRequest("/admin/GetDepartments", params);
+        return DepartmentListProtos.DepartmentList.parseFrom(responseBytes);
+    }
+
+    public DepartmentProtos.Department CreateDepartment(String boxId, DepartmentToCreateProtos.DepartmentToCreate departmentToCreate) throws IOException {
+        if (boxId == null) throw new NullPointerException("boxId");
+        if (departmentToCreate == null) throw new NullPointerException("departmentToCreate");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("boxId", boxId));
+        byte[] body = departmentToCreate.toByteArray();
+        byte[] responseBytes = PerformPostHttpRequest("/admin/CreateDepartment", params, body);
+        return DepartmentProtos.Department.parseFrom(responseBytes);
+    }
+
+    public DepartmentProtos.Department UpdateDepartment(String boxId, String departmentId, DepartmentToUpdateProtos.DepartmentToUpdate departmentToUpdate) throws IOException {
+        if (boxId == null) throw new NullPointerException("boxId");
+        if (departmentId == null) throw new NullPointerException("departmentId");
+        if (departmentToUpdate == null) throw new NullPointerException("departmentToUpdate");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("boxId", boxId));
+        params.add(new BasicNameValuePair("departmentId", departmentId));
+        byte[] body = departmentToUpdate.toByteArray();
+        byte[] responseBytes = PerformPostHttpRequest("/admin/UpdateDepartment", params, body);
+        return DepartmentProtos.Department.parseFrom(responseBytes);
+    }
+
+    public void DeleteDepartment(String boxId, String departmentId) throws IOException {
+        if (boxId == null) throw new NullPointerException("boxId");
+        if (departmentId == null) throw new NullPointerException("departmentId");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("boxId", boxId));
+        params.add(new BasicNameValuePair("departmentId", departmentId));
+        PerformPostHttpRequest("/admin/DeleteDepartment", params, null);
+    }
+
     public EmployeeProtos.Employee GetEmployee(String boxId, String userId) throws IOException {
         if (boxId == null) throw new NullPointerException("boxId");
         if (userId == null) throw new NullPointerException("userId");
@@ -1456,6 +1523,36 @@ public class DiadocApi {
         params.add(new BasicNameValuePair("userId", userId));
         byte[] responseBytes = PerformGetHttpRequest("/GetEmployee", params);
         return EmployeeProtos.Employee.parseFrom(responseBytes);
+    }
+
+    public EmployeeProtos.EmployeeList GetEmployees(String boxId) throws IOException {
+        if (boxId == null) throw new NullPointerException("boxId");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("boxId", boxId));
+        byte[] responseBytes = PerformGetHttpRequest("/GetEmployees", params);
+        return EmployeeProtos.EmployeeList.parseFrom(responseBytes);
+    }
+
+    public EmployeeProtos.EmployeeList GetEmployees(String boxId, int page) throws IOException {
+        if (boxId == null) throw new NullPointerException("boxId");
+        if (page < 1) throw new IllegalArgumentException("page must be 1 or greater");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("boxId", boxId));
+        params.add(new BasicNameValuePair("page", Integer.toString(page)));
+        byte[] responseBytes = PerformGetHttpRequest("/GetEmployees", params);
+        return EmployeeProtos.EmployeeList.parseFrom(responseBytes);
+    }
+
+    public EmployeeProtos.EmployeeList GetEmployees(String boxId, int page, int count) throws IOException {
+        if (boxId == null) throw new NullPointerException("boxId");
+        if (page < 1) throw new IllegalArgumentException("page must be 1 or greater");
+        if (count < 1) throw new IllegalArgumentException("count must be 1 or greater");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("boxId", boxId));
+        params.add(new BasicNameValuePair("page", Integer.toString(page)));
+        params.add(new BasicNameValuePair("count", Integer.toString(count)));
+        byte[] responseBytes = PerformGetHttpRequest("/GetEmployees", params);
+        return EmployeeProtos.EmployeeList.parseFrom(responseBytes);
     }
 
     public EmployeeProtos.Employee CreateEmployee(String boxId, EmployeeToCreateProtos.EmployeeToCreate employeeToCreate) throws IOException {
@@ -1479,7 +1576,7 @@ public class DiadocApi {
         byte[] responseBytes = PerformPostHttpRequest("/UpdateEmployee", params, body);
         return EmployeeProtos.Employee.parseFrom(responseBytes);
     }
-	
+
     public void DeleteEmployee(String boxId, String userId) throws IOException {
         if (boxId == null) throw new NullPointerException("boxId");
         if (userId == null) throw new NullPointerException("userId");
@@ -1528,8 +1625,7 @@ public class DiadocApi {
         return CloudSignProtos.CloudSignResult.parseFrom(data);
     }
 
-    public AsyncMethodResultProtos.AsyncMethodResult CloudSignConfirm(String token, String confirmationCode, Boolean returnContent) throws IOException
-    {
+    public AsyncMethodResultProtos.AsyncMethodResult CloudSignConfirm(String token, String confirmationCode, Boolean returnContent) throws IOException {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("token", token));
         params.add(new BasicNameValuePair("confirmationCode", confirmationCode));
@@ -1639,16 +1735,27 @@ public class DiadocApi {
         return new FileContent(bytes, fileNameHeader == null ? null : fileNameHeader.getValue());
     }
 
+    public RegistrationRequestProtos.RegistrationResponse Register(RegistrationRequestProtos.RegistrationRequest request) throws IOException {
+        byte[] body = request.toByteArray();
+        byte[] bytes = PerformPostHttpRequest("/Register", null, body);
+        return RegistrationRequestProtos.RegistrationResponse.parseFrom(bytes);
+    }
+
+    public void RegisterConfirm(RegistrationRequestProtos.RegistrationConfirmRequest request) throws IOException {
+        byte[] body = request.toByteArray();
+        PerformPostHttpRequest("/RegisterConfirm", null, body);
+    }
+
     public static int WaitTaskDefaultTimeoutInMillis = 5 * 60 * 1000;
 
-    protected byte[] WaitTaskResult(String url, String taskId, Integer timeoutInMillis) throws Exception  {
+    protected byte[] WaitTaskResult(String url, String taskId, Integer timeoutInMillis) throws Exception {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("taskId", taskId));
 
         if (timeoutInMillis == null)
             timeoutInMillis = WaitTaskDefaultTimeoutInMillis;
         long timeLimit = new Date(new Date().getTime() + timeoutInMillis).getTime();
-        while(true) {
+        while (true) {
 
             HttpResponse webResponse = ReceiveGetHttpResponse(url, params);
             int statusCode = webResponse.getStatusLine().getStatusCode();
@@ -1663,14 +1770,14 @@ public class DiadocApi {
                 Thread.sleep(delayInSeconds * 1000);
                 continue;
             }
-            if (statusCode != HttpStatus.SC_OK){
+            if (statusCode != HttpStatus.SC_OK) {
                 throw new DiadocErrorException(webResponse.getStatusLine().getReasonPhrase(), statusCode, TryGetDiadocErrorCode(webResponse));
             }
             return GetResponseBytes(webResponse);
         }
     }
 
-    private static Integer TryGetRetryAfter(HttpResponse webResponse){
+    private static Integer TryGetRetryAfter(HttpResponse webResponse) {
         Header[] retryAfterHeaders = webResponse.getHeaders(HttpHeaders.RETRY_AFTER);
         if (retryAfterHeaders.length > 0) {
             String retryAfterStr = retryAfterHeaders[0].getValue();
@@ -1681,7 +1788,7 @@ public class DiadocApi {
         return null;
     }
 
-    private static String TryGetDiadocErrorCode(HttpResponse webResponse){
+    private static String TryGetDiadocErrorCode(HttpResponse webResponse) {
         Header[] errorCodeHeaders = webResponse.getHeaders("X-Diadoc-ErrorCode");
         if (errorCodeHeaders.length > 0) {
             return errorCodeHeaders[0].getValue();

@@ -8,118 +8,18 @@ public final class ResolutionRequestInfoProtos {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
-  /**
-   * Protobuf enum {@code Diadoc.Api.Proto.Events.ResolutionRequestType}
-   */
-  public enum ResolutionRequestType
-      implements com.google.protobuf.ProtocolMessageEnum {
-    /**
-     * <code>UnknownResolutionRequestType = -1;</code>
-     */
-    UnknownResolutionRequestType(0, -1),
-    /**
-     * <code>ApprovementRequest = 0;</code>
-     */
-    ApprovementRequest(1, 0),
-    /**
-     * <code>SignatureRequest = 1;</code>
-     */
-    SignatureRequest(2, 1),
-    /**
-     * <code>ApprovementSignatureRequest = 2;</code>
-     */
-    ApprovementSignatureRequest(3, 2),
-    ;
-
-    /**
-     * <code>UnknownResolutionRequestType = -1;</code>
-     */
-    public static final int UnknownResolutionRequestType_VALUE = -1;
-    /**
-     * <code>ApprovementRequest = 0;</code>
-     */
-    public static final int ApprovementRequest_VALUE = 0;
-    /**
-     * <code>SignatureRequest = 1;</code>
-     */
-    public static final int SignatureRequest_VALUE = 1;
-    /**
-     * <code>ApprovementSignatureRequest = 2;</code>
-     */
-    public static final int ApprovementSignatureRequest_VALUE = 2;
-
-
-    public final int getNumber() { return value; }
-
-    public static ResolutionRequestType valueOf(int value) {
-      switch (value) {
-        case -1: return UnknownResolutionRequestType;
-        case 0: return ApprovementRequest;
-        case 1: return SignatureRequest;
-        case 2: return ApprovementSignatureRequest;
-        default: return null;
-      }
-    }
-
-    public static com.google.protobuf.Internal.EnumLiteMap<ResolutionRequestType>
-        internalGetValueMap() {
-      return internalValueMap;
-    }
-    private static com.google.protobuf.Internal.EnumLiteMap<ResolutionRequestType>
-        internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<ResolutionRequestType>() {
-            public ResolutionRequestType findValueByNumber(int number) {
-              return ResolutionRequestType.valueOf(number);
-            }
-          };
-
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
-      return getDescriptor().getValues().get(index);
-    }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
-      return getDescriptor();
-    }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
-      return Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.getDescriptor().getEnumTypes().get(0);
-    }
-
-    private static final ResolutionRequestType[] VALUES = values();
-
-    public static ResolutionRequestType valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-      if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
-      }
-      return VALUES[desc.getIndex()];
-    }
-
-    private final int index;
-    private final int value;
-
-    private ResolutionRequestType(int index, int value) {
-      this.index = index;
-      this.value = value;
-    }
-
-    // @@protoc_insertion_point(enum_scope:Diadoc.Api.Proto.Events.ResolutionRequestType)
-  }
-
   public interface ResolutionRequestInfoOrBuilder extends
       // @@protoc_insertion_point(interface_extends:Diadoc.Api.Proto.Events.ResolutionRequestInfo)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .Diadoc.Api.Proto.Events.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
+     * <code>optional .Diadoc.Api.Proto.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
      */
     boolean hasRequestType();
     /**
-     * <code>optional .Diadoc.Api.Proto.Events.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
+     * <code>optional .Diadoc.Api.Proto.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
      */
-    Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType getRequestType();
+    Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType getRequestType();
 
     /**
      * <code>required string Author = 2;</code>
@@ -161,6 +61,19 @@ public final class ResolutionRequestInfoProtos {
      */
     com.google.protobuf.ByteString
         getResolvedWithBytes();
+
+    /**
+     * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+     */
+    java.util.List<Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction> getActionsList();
+    /**
+     * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+     */
+    int getActionsCount();
+    /**
+     * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+     */
+    Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction getActions(int index);
   }
   /**
    * Protobuf type {@code Diadoc.Api.Proto.Events.ResolutionRequestInfo}
@@ -216,7 +129,7 @@ public final class ResolutionRequestInfoProtos {
             }
             case 8: {
               int rawValue = input.readEnum();
-              Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType value = Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType.valueOf(rawValue);
+              Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType value = Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
@@ -250,6 +163,39 @@ public final class ResolutionRequestInfoProtos {
               resolvedWith_ = bs;
               break;
             }
+            case 40: {
+              int rawValue = input.readEnum();
+              Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction value = Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(5, rawValue);
+                } else {
+                if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+                  actions_ = new java.util.ArrayList<Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction>();
+                  mutable_bitField0_ |= 0x00000010;
+                }
+                actions_.add(value);
+              }
+              break;
+            }
+            case 42: {
+              int length = input.readRawVarint32();
+              int oldLimit = input.pushLimit(length);
+              while(input.getBytesUntilLimit() > 0) {
+                int rawValue = input.readEnum();
+                Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction value = Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(5, rawValue);
+                  } else {
+                  if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+                    actions_ = new java.util.ArrayList<Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction>();
+                    mutable_bitField0_ |= 0x00000010;
+                  }
+                  actions_.add(value);
+                }
+              }
+              input.popLimit(oldLimit);
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -258,6 +204,9 @@ public final class ResolutionRequestInfoProtos {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+          actions_ = java.util.Collections.unmodifiableList(actions_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -291,17 +240,17 @@ public final class ResolutionRequestInfoProtos {
 
     private int bitField0_;
     public static final int REQUESTTYPE_FIELD_NUMBER = 1;
-    private Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType requestType_;
+    private Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType requestType_;
     /**
-     * <code>optional .Diadoc.Api.Proto.Events.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
+     * <code>optional .Diadoc.Api.Proto.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
      */
     public boolean hasRequestType() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional .Diadoc.Api.Proto.Events.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
+     * <code>optional .Diadoc.Api.Proto.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
      */
-    public Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType getRequestType() {
+    public Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType getRequestType() {
       return requestType_;
     }
 
@@ -410,11 +359,33 @@ public final class ResolutionRequestInfoProtos {
       }
     }
 
+    public static final int ACTIONS_FIELD_NUMBER = 5;
+    private java.util.List<Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction> actions_;
+    /**
+     * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+     */
+    public java.util.List<Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction> getActionsList() {
+      return actions_;
+    }
+    /**
+     * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+     */
+    public int getActionsCount() {
+      return actions_.size();
+    }
+    /**
+     * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+     */
+    public Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction getActions(int index) {
+      return actions_.get(index);
+    }
+
     private void initFields() {
-      requestType_ = Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType.UnknownResolutionRequestType;
+      requestType_ = Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType.UnknownResolutionRequestType;
       author_ = "";
       target_ = Diadoc.Api.Proto.ResolutionTargetProtos.ResolutionTarget.getDefaultInstance();
       resolvedWith_ = "";
+      actions_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -445,6 +416,9 @@ public final class ResolutionRequestInfoProtos {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeBytes(4, getResolvedWithBytes());
       }
+      for (int i = 0; i < actions_.size(); i++) {
+        output.writeEnum(5, actions_.get(i).getNumber());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -469,6 +443,15 @@ public final class ResolutionRequestInfoProtos {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(4, getResolvedWithBytes());
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < actions_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeEnumSizeNoTag(actions_.get(i).getNumber());
+        }
+        size += dataSize;
+        size += 1 * actions_.size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -588,7 +571,7 @@ public final class ResolutionRequestInfoProtos {
 
       public Builder clear() {
         super.clear();
-        requestType_ = Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType.UnknownResolutionRequestType;
+        requestType_ = Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType.UnknownResolutionRequestType;
         bitField0_ = (bitField0_ & ~0x00000001);
         author_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -600,6 +583,8 @@ public final class ResolutionRequestInfoProtos {
         bitField0_ = (bitField0_ & ~0x00000004);
         resolvedWith_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
+        actions_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -648,6 +633,11 @@ public final class ResolutionRequestInfoProtos {
           to_bitField0_ |= 0x00000008;
         }
         result.resolvedWith_ = resolvedWith_;
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          actions_ = java.util.Collections.unmodifiableList(actions_);
+          bitField0_ = (bitField0_ & ~0x00000010);
+        }
+        result.actions_ = actions_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -678,6 +668,16 @@ public final class ResolutionRequestInfoProtos {
         if (other.hasResolvedWith()) {
           bitField0_ |= 0x00000008;
           resolvedWith_ = other.resolvedWith_;
+          onChanged();
+        }
+        if (!other.actions_.isEmpty()) {
+          if (actions_.isEmpty()) {
+            actions_ = other.actions_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+          } else {
+            ensureActionsIsMutable();
+            actions_.addAll(other.actions_);
+          }
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -711,23 +711,23 @@ public final class ResolutionRequestInfoProtos {
       }
       private int bitField0_;
 
-      private Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType requestType_ = Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType.UnknownResolutionRequestType;
+      private Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType requestType_ = Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType.UnknownResolutionRequestType;
       /**
-       * <code>optional .Diadoc.Api.Proto.Events.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
+       * <code>optional .Diadoc.Api.Proto.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
        */
       public boolean hasRequestType() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional .Diadoc.Api.Proto.Events.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
+       * <code>optional .Diadoc.Api.Proto.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
        */
-      public Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType getRequestType() {
+      public Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType getRequestType() {
         return requestType_;
       }
       /**
-       * <code>optional .Diadoc.Api.Proto.Events.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
+       * <code>optional .Diadoc.Api.Proto.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
        */
-      public Builder setRequestType(Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType value) {
+      public Builder setRequestType(Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -737,11 +737,11 @@ public final class ResolutionRequestInfoProtos {
         return this;
       }
       /**
-       * <code>optional .Diadoc.Api.Proto.Events.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
+       * <code>optional .Diadoc.Api.Proto.ResolutionRequestType RequestType = 1 [default = UnknownResolutionRequestType];</code>
        */
       public Builder clearRequestType() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        requestType_ = Diadoc.Api.Proto.Events.ResolutionRequestInfoProtos.ResolutionRequestType.UnknownResolutionRequestType;
+        requestType_ = Diadoc.Api.Proto.ResolutionRequestTypeProtos.ResolutionRequestType.UnknownResolutionRequestType;
         onChanged();
         return this;
       }
@@ -1014,6 +1014,78 @@ public final class ResolutionRequestInfoProtos {
         return this;
       }
 
+      private java.util.List<Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction> actions_ =
+        java.util.Collections.emptyList();
+      private void ensureActionsIsMutable() {
+        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
+          actions_ = new java.util.ArrayList<Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction>(actions_);
+          bitField0_ |= 0x00000010;
+        }
+      }
+      /**
+       * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+       */
+      public java.util.List<Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction> getActionsList() {
+        return java.util.Collections.unmodifiableList(actions_);
+      }
+      /**
+       * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+       */
+      public int getActionsCount() {
+        return actions_.size();
+      }
+      /**
+       * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+       */
+      public Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction getActions(int index) {
+        return actions_.get(index);
+      }
+      /**
+       * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+       */
+      public Builder setActions(
+          int index, Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureActionsIsMutable();
+        actions_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+       */
+      public Builder addActions(Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureActionsIsMutable();
+        actions_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+       */
+      public Builder addAllActions(
+          java.lang.Iterable<? extends Diadoc.Api.Proto.ResolutionActionProtos.ResolutionAction> values) {
+        ensureActionsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, actions_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated .Diadoc.Api.Proto.ResolutionAction Actions = 5;</code>
+       */
+      public Builder clearActions() {
+        actions_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:Diadoc.Api.Proto.Events.ResolutionRequestInfo)
     }
 
@@ -1040,17 +1112,16 @@ public final class ResolutionRequestInfoProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\"Events/ResolutionRequestInfo.proto\022\027Di" +
-      "adoc.Api.Proto.Events\032\026ResolutionTarget." +
-      "proto\"\324\001\n\025ResolutionRequestInfo\022a\n\013Reque" +
-      "stType\030\001 \001(\0162..Diadoc.Api.Proto.Events.R" +
-      "esolutionRequestType:\034UnknownResolutionR" +
-      "equestType\022\016\n\006Author\030\002 \002(\t\0222\n\006Target\030\003 \001" +
-      "(\0132\".Diadoc.Api.Proto.ResolutionTarget\022\024" +
-      "\n\014ResolvedWith\030\004 \001(\t*\221\001\n\025ResolutionReque" +
-      "stType\022)\n\034UnknownResolutionRequestType\020\377" +
-      "\377\377\377\377\377\377\377\377\001\022\026\n\022ApprovementRequest\020\000\022\024\n\020Sig",
-      "natureRequest\020\001\022\037\n\033ApprovementSignatureR" +
-      "equest\020\002B\035B\033ResolutionRequestInfoProtos"
+      "adoc.Api.Proto.Events\032\026ResolutionAction." +
+      "proto\032\026ResolutionTarget.proto\032\033Resolutio" +
+      "nRequestType.proto\"\202\002\n\025ResolutionRequest" +
+      "Info\022Z\n\013RequestType\030\001 \001(\0162\'.Diadoc.Api.P" +
+      "roto.ResolutionRequestType:\034UnknownResol" +
+      "utionRequestType\022\016\n\006Author\030\002 \002(\t\0222\n\006Targ" +
+      "et\030\003 \001(\0132\".Diadoc.Api.Proto.ResolutionTa" +
+      "rget\022\024\n\014ResolvedWith\030\004 \001(\t\0223\n\007Actions\030\005 " +
+      "\003(\0162\".Diadoc.Api.Proto.ResolutionActionB",
+      "\035B\033ResolutionRequestInfoProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1063,15 +1134,19 @@ public final class ResolutionRequestInfoProtos {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          Diadoc.Api.Proto.ResolutionActionProtos.getDescriptor(),
           Diadoc.Api.Proto.ResolutionTargetProtos.getDescriptor(),
+          Diadoc.Api.Proto.ResolutionRequestTypeProtos.getDescriptor(),
         }, assigner);
     internal_static_Diadoc_Api_Proto_Events_ResolutionRequestInfo_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_Diadoc_Api_Proto_Events_ResolutionRequestInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Diadoc_Api_Proto_Events_ResolutionRequestInfo_descriptor,
-        new java.lang.String[] { "RequestType", "Author", "Target", "ResolvedWith", });
+        new java.lang.String[] { "RequestType", "Author", "Target", "ResolvedWith", "Actions", });
+    Diadoc.Api.Proto.ResolutionActionProtos.getDescriptor();
     Diadoc.Api.Proto.ResolutionTargetProtos.getDescriptor();
+    Diadoc.Api.Proto.ResolutionRequestTypeProtos.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

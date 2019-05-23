@@ -12,6 +12,12 @@ mvn deploy:deploy-file "-DpomFile=C:\Users\BulavkinSM\.m2\repository\ru\kontur\d
 diadocsdk-java является официальной Java-реализацией клиента, использующего [публичный API Диадока](http://api-docs.diadoc.ru/).
 На данный момент поддерживаются только JRE/JDK, на который установлен [КриптоПро JCP](https://www.cryptopro.ru/products/csp/jcp). Без КриптоПро JCP Diadoc SDK for Java работать не будет!
 
+Поддерживаемые версии JCP:
+
+|JCP|Diadoc Java SDK
+|---|---------------
+|1.x|< 1.64
+|2.x|> 2.0
 
 ## Как использовать?
 
