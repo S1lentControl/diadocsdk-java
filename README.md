@@ -1,4 +1,4 @@
-mvn deploy:deploy-file "-DpomFile=C:\Users\BulavkinSM\.m2\repository\ru\kontur\diadoc\diadocsdk\1.36.2.2-dev\diadocsdk-1.36.2.2-dev.pom"   "-Dfile=C:\Users\BulavkinSM\projects\diadocsdk-java-sfera\target\diadocsdk-1.36.2.2-dev.jar"   "-DrepositoryId=bcs-main-releases"   "-Durl=http://artifactory.gitlab.bcs.ru/artifactory/bcs-main-releases"
+mvn deploy:deploy-file "-DpomFile=/home/sbulavkin/.m2/repository/ru/kontur/diadoc/diadocsdk/1.36.2.3-dev/diadocsdk-1.36.2.3-dev.pom"   "-Dfile=/home/sbulavkin/projects/diadocsdk-java/target/diadocsdk-1.36.2.3-dev.jar"   "-DrepositoryId=bcs-main-releases"   "-Durl=https://artifactory.gitlab.bcs.ru/artifactory/bcs-main-releases"
 
 
 |              | Build Status
